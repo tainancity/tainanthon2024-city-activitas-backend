@@ -1,0 +1,15 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /server
+        - action: rebuild
+          path: requirements.txt
+    volumes:
+      - .:/server
+    restart: unless-stopped
