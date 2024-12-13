@@ -2,9 +2,10 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-  sqlite3 \
-  && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  && rm -rf /var/lib/apt/lists/* \
+  && apt-get clean
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -13,6 +14,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN mkdir -p /app/data
 
 COPY server /app/server
+
+RUN useradd -r -s /bin/false appuser \
+  && chown -R appuser:appuser /app
+
+USER appuser 
 
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
